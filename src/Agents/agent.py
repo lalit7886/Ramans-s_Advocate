@@ -7,10 +7,10 @@ from langchain_core.messages import SystemMessage
 from langgraph.graph import StateGraph,START, END, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.sqlite import SqliteSaver
-from tools import tools
+from tools.tools import tools
 load_dotenv()
 
-DEFAULT_MODEL = os.getenv("GROQ_MODEL","openai/gpt-oss-20b")
+DEFAULT_MODEL = os.getenv("GROQ_MODEL","gpt-oss-20b")
 Path("data").mkdir(exist_ok=True)
 ALLOWED_MODELS = {
     "gpt-oss-20b": "openai/gpt-oss-20b",
@@ -62,8 +62,7 @@ def build_agent(model_name: str):
     llm = ChatGroq(
         model=ALLOWED_MODELS[model_name],
         temperature=0.2,
-        max_output_tokens=2048,
-        max_input_tokens=4096,
+        max_tokens=2048,
     )
     
     llm_with_tools = llm.bind_tools(tools)
@@ -76,7 +75,7 @@ def build_agent(model_name: str):
             "messages":[response]
         }
         
-    tool_node = ToolNode[tools]
+    tool_node = ToolNode(tools)
     workflow = StateGraph(MessagesState)
     
     workflow.add_node("chatbot",chatbot_node)
@@ -97,7 +96,7 @@ _AGENT_CACHE = {}
 def get_agent(model_name: str | None=None):
     """
     Return cached Langgraph agent for selected model.
-    If not created yet, create once and reuse it/
+    If not created yet, create once and reuse it.
     """
     
     selected_model = normalize_model_name(model_name)

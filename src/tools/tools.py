@@ -1,11 +1,12 @@
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 from langchain_tavily import TavilySearch
-from RAG import retrieve_from_rag
-from database import save_memory , search_memory
+from RAG.rag import retrieve_from_rag
+from Database.database import save_memory , search_memory
 
 
 load_dotenv()
+CURRENT_THREAD_ID = "default"
 
 web_search = TavilySearch(
     max_results = 5,

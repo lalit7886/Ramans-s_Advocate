@@ -2,7 +2,7 @@ from datetime import datetime,timezone
 from pathlib import Path
 
 from sqlalchemy import create_engine, Column, Integer, String,Text,DateTime
-from sqlalchemy.orm import declerative_base, sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 Path("data").mkdir(exist_ok=True)
 
@@ -17,7 +17,7 @@ SessionLocal = sessionmaker(bind=engine,
                             autoflush= False,
                             autocommit=False)
 
-Base = declerative_base()
+Base = declarative_base()
 
 
 class Conversation(Base):
@@ -52,13 +52,13 @@ def init_db():
 def create_or_update_conversation(thread_id: str, first_message:str | None = None):
     db = SessionLocal()
     try:
-        Conversation = (
+        conversation = (
             db.query(Conversation)
             .filter(Conversation.thread_id==thread_id)
             .first()
         )
         
-        if not Conversation:
+        if not conversation:
             title = "New Chat"
             
             if first_message:
@@ -135,7 +135,7 @@ def save_memory(thread_id: str, memory: str):
         item = LongTermMemory(
             thread_id=thread_id,
             memory=memory,
-            created_at=datetime
+            created_at=datetime.now()
         )
         db.add(item)
         db.commit()
