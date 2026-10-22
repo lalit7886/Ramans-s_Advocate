@@ -85,7 +85,7 @@ def retrieve_from_rag(query: str, thread_id: str,K:int=4):
     
     results = []
     
-    for i, doc in enumerate(doc, start=1):
+    for i, doc in enumerate(docs, start=1):
         source = doc.metadata.get("source","uploaded_document")
         results.append(
             f"[Source {i}: {source} \n {doc.page_content}]"

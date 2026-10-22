@@ -628,11 +628,19 @@
         speechRecognition.onerror = (event) => {
             console.error("Speech recognition error:", event.error);
 
-            if (event.error === "not-allowed") {
-                alert("Microphone permission denied. Please allow microphone access.");
-            }
+            const errorMessages = {
+                "not-allowed": "Microphone access was denied. Allow microphone access for this site in your browser settings.",
+                "service-not-allowed": "Speech recognition is blocked by the browser. Try Chrome or Edge and check its speech settings.",
+                "no-speech": "No speech was detected. Check your microphone input and try speaking again.",
+                "audio-capture": "No microphone is available to the browser. Check your Mac's microphone input and permissions.",
+                "network": "Speech recognition could not reach its service. Check your internet connection and try again.",
+                "language-not-supported": "Speech recognition does not support the selected language."
+            };
 
-            stopDictation();
+            stopDictation(
+                errorMessages[event.error] ||
+                `Speech recognition stopped (${event.error}). Check the browser console for details.`
+            );
         };
 
         speechRecognition.onend = () => {
@@ -640,7 +648,7 @@
                 try {
                     speechRecognition.start();
                 } catch (error) {
-                    stopDictation();
+                    stopDictation(`Could not restart speech recognition: ${error.message}`);
                 }
             }
         };
@@ -670,10 +678,11 @@
             recognition.start();
         } catch (error) {
             console.error("Could not start dictation:", error);
+            stopDictation(`Could not start speech recognition: ${error.message}`);
         }
     }
 
-    function stopDictation() {
+    function stopDictation(message = "This advocate can make mistakes. Check important info.") {
         isDictating = false;
 
         if (recognition) {
@@ -692,7 +701,7 @@
         statusText.textContent = "Ready";
 
         if (noticeText) {
-            noticeText.textContent = "This advocate  can make mistakes. Check important info.";
+            noticeText.textContent = message;
         }
 
         messageInput.focus();

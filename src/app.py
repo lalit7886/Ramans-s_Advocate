@@ -96,7 +96,7 @@ async def upload_document(
                 },
                 status_code = 400
             )
-        file_id = str(uuid.uuid4)
+        file_id = str(uuid.uuid4())
         safe_filename = filename.replace(" ","_")
         file_path = f"uploads/{file_id}_{safe_filename}"
         
@@ -112,8 +112,8 @@ async def upload_document(
         
         return JSONResponse(
         {
-                "success":False,
-                "message": f"Uploaded {result["filename"]} and created {result['chunks']} chunks",
+                "success":True,
+                "message": f"Uploaded {result['filename']} and created {result['chunks']} chunks",
         }
         )
     except Exception as e:
@@ -234,8 +234,7 @@ async def chat_stream(request: Request):
                 "messages":[
                     HumanMessage(content=user_message)
                 ]
-            }
-            
+            }       
             for chunk, metadata in agent.stream(
                 inputs,
                 config=config,
