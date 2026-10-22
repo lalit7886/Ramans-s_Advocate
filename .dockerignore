@@ -1,5 +1,5 @@
 .venv
 env/
-venv//
+venv/
 env.bak/
 venv.bak/

@@ -6,6 +6,8 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+ENV HF_HOME=/app/.cache/huggingface
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     git \
