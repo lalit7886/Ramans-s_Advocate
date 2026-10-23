@@ -5,7 +5,7 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-
+ENV PYTHONPATH=/app/src
 ENV HF_HOME=/app/.cache/huggingface
 
 RUN apt-get update && apt-get install -y \
@@ -25,4 +25,4 @@ COPY . .
 RUN mkdir -p uploads data
 
 EXPOSE 8000
-CMD ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port","8000"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port","8000"]
